@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.response import Response
-from finalyear1.workings.helpers.get_news_articles import get_top_news, get_news 
-from finalyear1.workings.helpers import single_summariler, multi_summarizer,extract_keywords
+from workings.helpers.get_news_articles import get_top_news, get_news 
+from workings.helpers import single_summariler, multi_summarizer,extract_keywords
 
 class TitleView(APIView):
     def get(self, request) :
