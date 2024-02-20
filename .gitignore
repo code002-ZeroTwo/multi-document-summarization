@@ -1,0 +1,60 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Database files
+*.sqlite3
+db.sqlite3
+
+# Virtual environment
+venv/
+env/
+
+# Media files
+media/
+
+# Static files
+staticfiles/
+
+# Secret key file
+*.key
+
+# Development and environment files
+*.env
+*.log
+
+# IDE files
+.vscode/
+.idea/
+
+# Compiled Python files
+*.pyc
+
+# Local configuration
+local_settings.py
+
+# Dependency directories
+node_modules/
+bower_components/
+
+# Docker
+Dockerfile
+docker-compose.yml
+
+# System and temporary files
+*.DS_Store
+Thumbs.db
+*.bak
+*.swp
+
+# Ignore migrations, as they are specific to each developer's database
+**/migrations/
+
+# Ignore pipenv virtual environment
+Pipfile
+Pipfile.lock
+
+# ignore ml_models
+ml_models
