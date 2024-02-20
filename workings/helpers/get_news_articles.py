@@ -1,6 +1,6 @@
 from newsapi import NewsApiClient
 from datetime import datetime 
-from refine_news_articles import get_top_articles, get_titles
+from . import refine_news_articles
 
 newsapi = NewsApiClient(api_key='76dbb358a26f4a649a247e98095f7d1c')
 def get_news(query, date=None):
@@ -11,7 +11,7 @@ def get_news(query, date=None):
                                           language='en',
                                           sort_by='relevancy')
     
-    return get_top_articles(all_articles)
+    return refine_news_articles.get_top_articles(all_articles)
 
 ## need to add more features 
     
@@ -20,8 +20,5 @@ def get_top_news():
                                           sources='bbc-news,the-verge',
                                           language='en',
                                           )
-    titles = get_titles(top_headlines)
+    titles = refine_news_articles.get_titles(top_headlines)
     return titles
-
-print(get_news('apple vision pro'))
-# print(get_top_news())
