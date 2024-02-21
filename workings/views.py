@@ -28,16 +28,17 @@ class ContentView(APIView):
 
         # generate summary of list of news articles
 
+
         # append list of summary to a single document seperated by |||||
 
         for summary in summaries :
             document = document + "||||" + summary
         
         # generate summary of document
-            summary = multi_summarizer.generate_summary(document)
+            final_summary = multi_summarizer.generate_summary(document)
         
 
         return Response({
-            "summary" : summary
+            "summary" : final_summary
         })
     
