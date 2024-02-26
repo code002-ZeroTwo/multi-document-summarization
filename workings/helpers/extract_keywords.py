@@ -15,12 +15,15 @@ def extract_keywords(title):
                         if token.pos_ in ['NOUN','PROPN'] and token.pos_ != 'VERB']
                         
 
-    combined_keywords = relevant_entities + important_tokens
+    if len(relevant_entities) > 1:
+        combined_keywords = relevant_entities 
+
+    else: 
+        combined_keywords = important_tokens + relevant_entities
+
 
     # Remove duplicates
     combined_keywords = list(set(combined_keywords))
-
-    combined_keywords = combined_keywords[:3]
 
     return combined_keywords
 
@@ -28,7 +31,8 @@ def extract_keywords(title):
 
 
 # List of titles
-""" titles = [
+"""
+titles = [
     'Tel Aviv protesters call on Netanyahu to resign',
     'Julius Nyerere: Former Tanzanian leader honoured by African Union statue',
     'Israel sets March deadline for Gaza ground offensive in Rafah',
@@ -50,4 +54,8 @@ def extract_keywords(title):
     'With the rise of AI, web crawlers are suddenly controversial',
     'AI at Work'
 ]
+
+for i in range(len(titles)):
+
+    print(extract_keywords(titles[i]))
 """

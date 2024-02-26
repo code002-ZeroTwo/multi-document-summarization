@@ -3,6 +3,8 @@ from bs4 import BeautifulSoup
 from readability import Document
 import re
 from newsplease import NewsPlease
+from . import check_semantic
+# import check_semantic
 
 def extract_article_content(article_url):
     """
@@ -33,7 +35,7 @@ def remove_redundant_spaces(document):
 
     return cleaned_document
 
-def get_top_articles(all_articles, top_articles_count=3):
+def get_top_articles(all_articles,query, top_articles_count=5):
     news = {}
     if 'articles' in all_articles:
         # top_articles_content = []
@@ -42,17 +44,29 @@ def get_top_articles(all_articles, top_articles_count=3):
             # article_content = extract_article_content(result['url'])
             to_print = NewsPlease.from_url(result['url'])
             
+            related = check_semantic.similarity(query, result['title'])
+
+            if(related == False):
+                continue
 
             try:
                 article_with_removed_spaces = remove_redundant_spaces(to_print.maintext)
-                if(article_with_removed_spaces != "ad"):
-                    news[to_print.title] = article_with_removed_spaces
+                related = check_semantic.similarity(result['title'], article_with_removed_spaces)
+
+                if(related):
+                    news[result['title']] = article_with_removed_spaces
 
             except AttributeError:
                 print("no articles found")
+
+        print(news)
+
         return news
     else:
         return "No articles found in the search results."
+
+# given a title retrive titles and do similarities check
+
 
 
 def get_titles(all_articles):
