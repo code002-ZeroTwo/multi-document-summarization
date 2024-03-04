@@ -15,10 +15,10 @@ const useGetTitles = () => {
       queryKey: [KEYS.titleList],
       queryFn: async() : Promise<TitleListType> => {
         const response = await axiosInstance.get('');
-        return response?.data?.titles;
+        return response?.data;
       }
     }
-      
+
     )
   )
 }

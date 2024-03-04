@@ -10,7 +10,7 @@ function App() {
     <h1>Today's Hot Topics</h1>
 
     <div className='flex flex-col'>
-    {isLoading ? 'Titles are loading' : data?.titles.map(title => <Button>{title}</Button>)}
+    {isLoading ? 'Titles are loading' : data?.titles?.map(title => <Button>{title}</Button>)}
     </div>
     </>
   )
