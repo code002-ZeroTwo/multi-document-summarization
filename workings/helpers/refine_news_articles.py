@@ -3,8 +3,8 @@ from bs4 import BeautifulSoup
 from readability import Document
 import re
 from newsplease import NewsPlease
-from . import check_semantic
-# import check_semantic
+# from . import check_semantic
+import check_semantic
 
 def extract_article_content(article_url):
     """
@@ -30,8 +30,8 @@ def remove_redundant_spaces(document):
     cleaned_document = cleaned_document.strip()
 
     # check if article is ad or not
-    if(is_ad(cleaned_document)):
-        cleaned_document = "ad"
+    # if(is_ad(cleaned_document)):
+        # cleaned_document = "ad"
 
     return cleaned_document
 
@@ -58,8 +58,6 @@ def get_top_articles(all_articles,query, top_articles_count=5):
 
             except AttributeError:
                 print("no articles found")
-
-        print(news)
 
         return news
     else:
