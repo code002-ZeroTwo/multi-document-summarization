@@ -1,7 +1,7 @@
 from transformers import pipeline, AutoTokenizer, AutoModelForSeq2SeqLM
 
 
-model_name = "/home/sid/Documents/code/fyp/finalyear1/workings/ml_models/bart-large-A"
+model_name = "/home/rohit/Desktop/fyp/bart-large-A"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModelForSeq2SeqLM.from_pretrained(model_name)
 
