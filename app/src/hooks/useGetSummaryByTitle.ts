@@ -1,5 +1,6 @@
 import useAxiosInstance from '@/lib/axios-instance';
 import { useMutation } from '@tanstack/react-query';
+import { useNavigate } from 'react-router-dom';
 
 export interface TitleSchema
 {
@@ -7,23 +8,29 @@ export interface TitleSchema
 }
 
 const useGetSummaryByTitle = () => {
-
+  const navigate = useNavigate();
   const axiosInstance = useAxiosInstance();
 
 
   const getSummaryByTitle = async (values: TitleSchema) => {
-    const response = await axiosInstance.post('/summary', {
-        data: values
-    });
+    const response = await axiosInstance.post('/summary', values);
     return response?.data;
   };
 
   const { mutate, isPending, isSuccess } = useMutation({
-    mutationFn : getSummaryByTitle
+    mutationFn : getSummaryByTitle,
+    onSuccess : (response,param) => {
+      navigate('/title-page-summary', {
+        state :  {
+          summary : response?.data?.summary?.summary_text,
+          title: param.title
+        }
+      })
+    }
   });
 
   const onSubmit = (values: TitleSchema) => {
-    console.log(values);
+     console.log(values);
     
       mutate(values);
   };
