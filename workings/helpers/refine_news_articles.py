@@ -3,8 +3,8 @@ from bs4 import BeautifulSoup
 from readability import Document
 import re
 from newsplease import NewsPlease
-# from . import check_semantic
-import check_semantic
+from . import check_semantic
+# import check_semantic
 
 def extract_article_content(article_url):
     """
