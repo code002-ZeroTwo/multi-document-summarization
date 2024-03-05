@@ -4,7 +4,7 @@ from . import refine_news_articles
 # import refine_news_articles
 
 newsapi = NewsApiClient(api_key='76dbb358a26f4a649a247e98095f7d1c')
-def get_news(query, date=None):
+def get_news(query,title_data, date=None):
     all_articles = newsapi.get_everything(q=query,
                                           #domains='bbc.co.uk,techcrunch.com',
                                           #from_param=date,
@@ -12,8 +12,8 @@ def get_news(query, date=None):
                                           language='en',
                                           sort_by='relevancy')
 
-    
-    return refine_news_articles.get_top_articles(all_articles,query)
+    print(all_articles) 
+    return refine_news_articles.get_top_articles(all_articles,title_data)
 
 ## need to add more features 
     

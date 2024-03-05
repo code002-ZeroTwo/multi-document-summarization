@@ -19,7 +19,11 @@ def extract_keywords(title):
         combined_keywords = relevant_entities 
 
     else: 
-        combined_keywords = important_tokens + relevant_entities
+        combined_keywords = important_tokens 
+
+    # only send 3 keywords
+    if len(combined_keywords) > 3:
+        combined_keywords = combined_keywords[:3]
 
 
     # Remove duplicates
@@ -29,33 +33,3 @@ def extract_keywords(title):
 
     # Print or use the relevant entities as keywords
 
-
-# List of titles
-"""
-titles = [
-    'Tel Aviv protesters call on Netanyahu to resign',
-    'Julius Nyerere: Former Tanzanian leader honoured by African Union statue',
-    'Israel sets March deadline for Gaza ground offensive in Rafah',
-    'At least 55 dead in ambush in remote PNG Highland region',
-    "Oppenheimer's Cillian Murphy and Robert Downey Jr scoop Bafta Film Awards",
-    'The US will relax pollution-limiting rules for vehicle emissions',
-    "Brazil's Lula compares Israel's Gaza campaign to the Holocaust",
-    'Gaza doctors: ‘We leave patients to scream for hours and hours’',
-    'Apple to be fined over $500 million under EU antitrust law',
-    'Alexei Navalny: US and UK ambassadors to Russia lay tributes',
-    'Why all your notes and files should be plain text',
-    "'Zombie Fires' burning at an alarming rate in Canada",
-    'Ridge Alkonis: The sailor who stoked Japanese resentment against the US',
-    'The Verge',
-    'The DICE Awards show is the celebration developers and fans deserve',
-    'I printed chocolate on a 3D printer and ate it',
-    'Figma’s CEO on moving on after failed Adobe merger',
-    'The shine comes off the Vision Pro',
-    'With the rise of AI, web crawlers are suddenly controversial',
-    'AI at Work'
-]
-
-for i in range(len(titles)):
-
-    print(extract_keywords(titles[i]))
-"""
