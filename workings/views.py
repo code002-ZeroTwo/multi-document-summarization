@@ -16,18 +16,10 @@ class ContentView(APIView):
     def post(self, request) :
 
         try:
-
             title_data = request.data["title"]
-            # get keywords from title
             keywords = extract_keywords.extract_keywords(str(title_data))
-            # get news articles related to keywords
-            # convert the keywords of list to string
             keywords_string = " ".join(keywords)
-            print(f"this is keywords string {keywords_string}" )
-            news_articles = get_news(keywords_string)
-
-            print('\n')
-            print(news_articles)
+            news_articles = get_news(keywords_string,title_data)
 
             # summarize each news articles and put in a list
             summaries = []
@@ -40,10 +32,8 @@ class ContentView(APIView):
             print('\n')
             print(summaries)
 
-            # generate summary of list of news articles
-
-
-            # append list of summary to a single document seperated by |||||
+            if(len(summaries) == 1):
+                return Response(summaries[0])
 
             for summary in summaries :
                 try: 
