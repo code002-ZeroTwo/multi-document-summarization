@@ -1,5 +1,4 @@
 import requests
-from bs4 import BeautifulSoup
 from readability import Document
 import re
 from newsplease import NewsPlease
@@ -57,8 +56,6 @@ def get_top_articles(all_articles,title_data):
                     # article_with_removed_spaces = remove_redundant_spaces(to_print.cleaned_text)
                     article_with_removed_spaces = remove_redundant_spaces(to_print.maintext)
                     related = check_semantic.similarity(result['title'], article_with_removed_spaces)
-                    print("similarity score of article and title")
-                    print(related)
 
                     if(related > 0.2):
                         news[result['title']] = article_with_removed_spaces
