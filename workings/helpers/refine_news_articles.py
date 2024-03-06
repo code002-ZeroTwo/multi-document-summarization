@@ -35,36 +35,43 @@ def remove_redundant_spaces(document):
 
     return cleaned_document
 
-def get_top_articles(all_articles,query, top_articles_count=5):
+def get_top_articles(all_articles,title_data):
     news = {}
     if 'articles' in all_articles:
         # top_articles_content = []
-        for result in all_articles['articles'][:top_articles_count]:
-
-            # article_content = extract_article_content(result['url'])
-            to_print = NewsPlease.from_url(result['url'])
-            
-            related = check_semantic.similarity(query, result['title'])
-
-            if(related == False):
-                continue
-
+        for result in all_articles['articles'][:10]:
             try:
-                article_with_removed_spaces = remove_redundant_spaces(to_print.maintext)
-                related = check_semantic.similarity(result['title'], article_with_removed_spaces)
+                to_print = NewsPlease.from_url(result['url'])
 
-                if(related):
-                    news[result['title']] = article_with_removed_spaces
+                print("similarity between title")
+                related = check_semantic.similarity(title_data, result['title'])
 
-            except AttributeError:
-                print("no articles found")
+                if(related < 0.3):
+                    continue
+                else:
+                    print(to_print.title)
+                    print(to_print.maintext)
 
+
+                try:
+                    # article_with_removed_spaces = remove_redundant_spaces(to_print.cleaned_text)
+                    article_with_removed_spaces = remove_redundant_spaces(to_print.maintext)
+                    related = check_semantic.similarity(result['title'], article_with_removed_spaces)
+                    print("similarity score of article and title")
+                    print(related)
+
+                    if(related > 0.2):
+                        news[result['title']] = article_with_removed_spaces
+
+                except AttributeError:
+                    print("no articles found")
+            
+            except Exception as e:
+                print(f"errror processing article: {str(e)}")
+        print(news)
         return news
     else:
         return "No articles found in the search results."
-
-# given a title retrive titles and do similarities check
-
 
 
 def get_titles(all_articles):
