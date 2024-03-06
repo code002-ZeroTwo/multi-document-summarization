@@ -17,14 +17,22 @@ class ContentView(APIView):
 
         try:
             title_data = request.data["title"]
+            description_data = request.data["description"]
+            if "-" in title_data:
+                title_data = title_data.split(" - ")[0].strip()
             keywords = extract_keywords.extract_keywords(str(title_data))
+            description_keywords = extract_keywords.extract_keywords(str(description_data))
             keywords_string = " ".join(keywords)
-            news_articles = get_news(keywords_string,title_data)
+            description_keywords_string = " ".join(description_keywords)
+            news_articles = get_news(keywords_string,title_data,description_keywords_string,description_data)
 
             # summarize each news articles and put in a list
             summaries = []
-
+            append_sepertly = []
             for key, value in news_articles.items():
+                if(len(value) < 200):
+                    append_sepertly.append(value)
+                    continue
                 summary = single_summariler.generate_summary(value)
                 summaries.append(summary)
 
@@ -37,10 +45,13 @@ class ContentView(APIView):
 
             for summary in summaries :
                 try: 
-                    document = document + "|||||" + summary[0]['summary_text']
+                    document = document + "|||||" + summary[0]['summary_text'] 
                 except UnboundLocalError:
                     document = summary[0]['summary_text']
-            
+
+            if(len(append_sepertly) > 0):
+                for doc in append_sepertly:
+                    document += "|||||" + doc
             # generate summary of document
             try:
                 final_summary = multi_summarizer.generate_summary(document)
@@ -57,5 +68,9 @@ class ContentView(APIView):
 class SearchView(APIView):
     def post(self, request) :
         query = request.data["query"]
-        titles = get_top_news(query)
+        try:
+            category = request.data["category"]
+        except KeyError:
+            category = "general"
+        titles = get_top_news(query,category)
         return Response(titles)
