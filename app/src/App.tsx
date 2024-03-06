@@ -1,4 +1,5 @@
 import './App.css'
+import './index.css'
 import RouteLayout from './routes';
 
 function App() {
