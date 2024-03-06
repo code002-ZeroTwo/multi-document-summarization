@@ -1,24 +1,22 @@
-# Load model directly
-from transformers import pipeline, AutoTokenizer, AutoModelForSeq2SeqLM
+from transformers import pipeline, PegasusTokenizer, PegasusForConditionalGeneration
 
-tokenizer = AutoTokenizer.from_pretrained("google/pegasus-large")
-model = AutoModelForSeq2SeqLM.from_pretrained("google/pegasus-large")
+model_path = "/home/sid/Documents/code/fyp/finalyear1/workings/ml_models/finetuned-cnndailymail"
 
-"""
+tokenizer = PegasusTokenizer.from_pretrained(model_path)
+model = PegasusForConditionalGeneration.from_pretrained(model_path)
+
+max_sequence = 1000
+
+def truncate_document(document, max_sequence):
+    if len(document) > max_sequence:
+        return document[:max_sequence]
+    else:
+        return document
+
 def generate_summary(document):
-    document = document[:1000]
-    summarizer = pipeline(model=model, tokenizer=tokenizer, task="summarization")
-    summary = summarizer(document)
-    return summary
-"""
 
-def generate_summary(document):
-    # Tokenize the document
-    tokens = tokenizer(document, max_length=1024, truncation=True, return_tensors="pt")
-
-    # Get the truncated text
-    truncated_text = tokenizer.decode(tokens["input_ids"][0], skip_special_tokens=True)
+    truncated_document = truncate_document(document, max_sequence)
 
     summarizer = pipeline(model=model, tokenizer=tokenizer, task="summarization")
-    summary = summarizer(truncated_text)
+    summary = summarizer(truncated_document)
     return summary
