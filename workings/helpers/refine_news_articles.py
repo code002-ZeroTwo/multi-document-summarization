@@ -2,6 +2,7 @@ import requests
 from readability import Document
 import re
 from newsplease import NewsPlease
+from goose3 import Goose
 from . import check_semantic
 # import check_semantic
 
@@ -34,18 +35,22 @@ def remove_redundant_spaces(document):
 
     return cleaned_document
 
-def get_top_articles(all_articles,title_data):
+def get_top_articles_(all_articles,title_data,all_articles_des,description_data):
     news = {}
     if 'articles' in all_articles:
         # top_articles_content = []
-        for result in all_articles['articles'][:10]:
+        for result in all_articles['articles'][:20]:
             try:
                 to_print = NewsPlease.from_url(result['url'])
+                g = Goose()
+                container = g.extract(url=result['url'])
 
+
+                print(result['title'])
                 print("similarity between title")
-                related = check_semantic.similarity(title_data, result['title'])
+                related = max(check_semantic.similarity(title_data, result['title']),check_semantic.similarity(title_data, result['description']))
 
-                if(related < 0.3):
+                if(related < 0.35):
                     continue
                 else:
                     print(to_print.title)
@@ -53,29 +58,110 @@ def get_top_articles(all_articles,title_data):
 
 
                 try:
-                    # article_with_removed_spaces = remove_redundant_spaces(to_print.cleaned_text)
-                    article_with_removed_spaces = remove_redundant_spaces(to_print.maintext)
-                    related = check_semantic.similarity(result['title'], article_with_removed_spaces)
+                    article_with_removed_spaces_g = remove_redundant_spaces(container.cleaned_text)
+                    article_with_removed_spaces_n = remove_redundant_spaces(to_print.maintext)
+                    news_related = check_semantic.similarity(title_data,article_with_removed_spaces_n)
+                    goose_related = check_semantic.similarity(title_data, article_with_removed_spaces_g)
 
-                    if(related > 0.2):
-                        news[result['title']] = article_with_removed_spaces
+                    if(news_related > goose_related):
+                        article_with_removed_spaces = article_with_removed_spaces_n
+                    elif(goose_related > news_related):
+                        article_with_removed_spaces = article_with_removed_spaces_g
+
+                    if(len(news) < 3):
+                        if(related > 0.2):
+                            news[result['title']] = (article_with_removed_spaces,related)
+                    else:
+                        min_related_key = min(news, key=lambda x: news[x][1])
+                        if(news[min_related_key][1] < related):
+                            del news[min_related_key]
+                            news[result['title']] = (article_with_removed_spaces,related)
 
                 except AttributeError:
                     print("no articles found")
             
             except Exception as e:
                 print(f"errror processing article: {str(e)}")
-        print(news)
-        return news
+        # before returning news dictionary removed related value from the dictionary
+        new_news = {key: value[0] for key,value in news.items()}
+        print(new_news)
+        return new_news
     else:
         return "No articles found in the search results."
+
+def get_top_articles(all_articles, title_data, all_articles_des, description_data):
+    news = {}
+
+    def process_result(result):
+        try:
+            to_print = NewsPlease.from_url(result['url'])
+            g = Goose()
+            container = g.extract(url=result['url'])
+
+            print(result['title'])
+            print("similarity between title")
+
+            related = max(
+                check_semantic.similarity(title_data, result['title']),
+                check_semantic.similarity(description_data, result['description']),
+                check_semantic.similarity(title_data, result['description']),
+                check_semantic.similarity(description_data, result['title'])
+            )
+
+            if related < 0.35:
+                return  # Skip if similarity is too low
+
+            print(to_print.title)
+            print(to_print.maintext)
+
+            try:
+                article_with_removed_spaces_g = remove_redundant_spaces(container.cleaned_text)
+                article_with_removed_spaces_n = remove_redundant_spaces(to_print.maintext)
+
+                news_related = check_semantic.similarity(title_data, article_with_removed_spaces_n)
+                goose_related = check_semantic.similarity(title_data, article_with_removed_spaces_g)
+
+                if(news_related > goose_related):
+                    article_with_removed_spaces = article_with_removed_spaces_n
+                    related = news_related
+                elif(goose_related > news_related):
+                    article_with_removed_spaces = article_with_removed_spaces_g
+                    related = goose_related
+
+                if len(news) < 3:
+                    if related > 0.2:
+                        news[result['title']] = (article_with_removed_spaces, related)
+                else:
+                    min_related_key = min(news, key=lambda x: news[x][1])
+                    if news[min_related_key][1] < related:
+                        del news[min_related_key]
+                        news[result['title']] = (article_with_removed_spaces, related)
+
+            except AttributeError:
+                print("no articles found")
+
+        except Exception as e:
+            print(f"error processing article: {str(e)}")
+
+    if 'articles' in all_articles:
+        for result in all_articles['articles'][:10]:
+            process_result(result)
+
+    if 'articles' in all_articles_des:
+        for result in all_articles_des['articles'][:10]:
+            process_result(result)
+
+    # before returning news dictionary removed related value from the dictionary
+    new_news = {key: value[0] for key, value in news.items()}
+    print(new_news)
+    return new_news
 
 
 def get_titles(all_articles):
     titles = []
     if 'articles' in all_articles:
         for result in all_articles['articles']:
-            titles.append(result['title'])
+            titles.append((result['title'],result['description']))
     return titles
 
 def is_ad(document):
