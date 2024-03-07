@@ -16,7 +16,7 @@ const Home = () => {
         flexDirection: 'column',
         gap: '0.4rem',
       }}>
-      {isLoading ? 'Titles are loading...' : data?.titles?.map(title => <Button  key={title} onClick={() => {onSubmit({title})}}>{title}</Button>)}
+      {isLoading ? 'Titles are loading...' : data?.titles?.map(title => <Button  key={title[0]} onClick={() => {onSubmit({title: title[0], description: title[1]})}}>{title[0]}</Button>)}
       </div>
       </div>
     )

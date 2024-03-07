@@ -4,8 +4,11 @@ import { useQuery } from '@tanstack/react-query'
 
 export interface TitleListType
 {
-  titles: string[]
+  titles: Title[]
 }
+
+export type Title = string[];
+
 
 
 const useGetTitles = () => {

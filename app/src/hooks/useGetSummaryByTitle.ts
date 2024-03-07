@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 export interface TitleSchema
 {
     title: string,
+    description: string,
 }
 
 const useGetSummaryByTitle = () => {
