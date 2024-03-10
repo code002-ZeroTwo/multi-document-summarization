@@ -20,10 +20,11 @@ const useGetSummaryByTitle = () => {
 
   const { mutate, isPending, isSuccess } = useMutation({
     mutationFn : getSummaryByTitle,
-    onSuccess : (response,param) => {
+    onSuccess : async (response,param) => {
+      console.log(response);
       navigate('/title-page-summary', {
         state :  {
-          summary : response?.data?.summary?.summary_text,
+          summary : await response,
           title: param.title
         }
       })

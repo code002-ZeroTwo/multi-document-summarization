@@ -6,7 +6,10 @@ const TitleSummaryPage = () => {
   console.log(location);
   return (
     <div>
-      <h1>Summary for the title : {location.state.title}</h1>
+      <h1>Title : {location.state.title}</h1>
+      <p>
+        Summary: {location.state.summary[0].summary_text}
+      </p>
     </div>
   )
 }

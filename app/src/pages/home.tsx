@@ -9,7 +9,7 @@ const Home = () => {
   
     return (
       <div>
-      <h1 className='font-bold text-[320px]'>Today's Hot Topics</h1>
+      <h1 className='font-bold text-[50px]'>Today's Hot Topics</h1>
   
       <div style={{
         display: 'flex',
