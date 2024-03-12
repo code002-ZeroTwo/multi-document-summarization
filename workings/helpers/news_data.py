@@ -1,11 +1,12 @@
 import requests
 from goose3 import Goose
-api_key = "pub_37437952f8b03214af008a425d28c7448e062"
+from workings.models import News
+from . import refine_news_articles
 
-def get_news_archive(api_key,  search_query, language='en'):
+def get_news_archive(search_query, language='en'):
     api_url = f"https://newsdata.io/api/1/news"
     params = {
-        "apikey": api_key,
+        "apikey": "pub_37437952f8b03214af008a425d28c7448e062",
         "q": search_query,
         "language": language,
         "country": "np"
@@ -26,8 +27,10 @@ def get_news_archive(api_key,  search_query, language='en'):
         print(f"An error occurred: {e}")
         return None
 
+# save news content to news model
 
-def present_news_response(response):
+def save_news_to_db(response):
+    print(response)
     if 'status' in response and response['status'] == 'success':
         total_results = response.get('totalResults', 0)
         print(f"Total Results: {total_results}\n")
@@ -35,25 +38,18 @@ def present_news_response(response):
 
         if 'results' in response and isinstance(response['results'], list):
             for index, article in enumerate(response['results'], start=1):
-                print(f"Article {index}:")
-                print(f"Title: {article.get('title', 'N/A')}")
-                print(f"Link: {article.get('link', 'N/A')}")
+                title = article.get('title', 'N/A')
+                description = article.get('description', 'N/A')
+                url = article.get('link', 'N/A')
+                publishedAt = article.get('pubDate', 'N/A')
                 main_content = g.extract(url=article.get('link', 'N/A'))
-                print(f"main content: {main_content.cleaned_text}")
-                print(f"Keywords: {article.get('keywords', 'N/A')}")
-                print(f"Createor: {article.get('creator', 'N/A')}")
-                print(f"Description: {article.get('description', 'N/A')}")
-                print(f"Publication Date: {article.get('pubDate', 'N/A')}")
-                print(f"Image URL: {article.get('image_url', 'N/A')}")
-                print(f"Source: {article.get('source_id', 'N/A')}")
-                print(f"Country: {', '.join(article.get('country', []))}")
-                print(f"Category: {', '.join(article.get('category', []))}")
-                print(f"Language: {article.get('language', 'N/A')}")
-                print(f"Sentiment: {article.get('sentiment', 'N/A')}")
-                print("\n" + "-"*30 + "\n")
+                content = refine_news_articles.remove_redundant_spaces(main_content.cleaned_text)
+                category = article.get('category', 'N/A')
 
+                news = News(title=title, description=description, url=url, publishedAt=publishedAt, content=content, category=category)
+                news.save()
         else:
-            print("No results found.")
+            print("No results found in the response.")
     else:
         print("Error in the response.")
 
@@ -70,10 +66,3 @@ categories = [
     "enviorment",
     "food"
 ]
-
-search_query = "politics"
-
-result = get_news_archive(api_key,  search_query)
-
-if result: 
-    present_news_response(result)
