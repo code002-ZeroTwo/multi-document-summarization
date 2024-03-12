@@ -24,11 +24,9 @@ def get_news(query,title_data,des_query,description_data, date=None):
 
 ## need to add more features 
     
-def get_top_news(query = '',category = 'general'):
+def get_top_news(query = ''):
     top_headlines = newsapi.get_top_headlines(q=query,
                                           sources='bbc-news,cnn.com,reuters.com,washingtonpost.com,nytimes.com,wsj.com',
-
-                                          # category=category,
                                           language='en',
                                           )
     titles_and_descriptions = refine_news_articles.get_titles(top_headlines)
