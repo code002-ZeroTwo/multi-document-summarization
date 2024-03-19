@@ -123,10 +123,8 @@ def get_top_articles(all_articles, title_data, all_articles_des, description_dat
 
                 if(news_related > goose_related):
                     article_with_removed_spaces = article_with_removed_spaces_n
-                    related = news_related
-                elif(goose_related > news_related):
+                else:
                     article_with_removed_spaces = article_with_removed_spaces_g
-                    related = goose_related
 
                 if len(news) < 3:
                     if related > 0.2:
